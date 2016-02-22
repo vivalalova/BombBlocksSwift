@@ -16,6 +16,8 @@
 		4C184E4F1C75726400ED6116 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C184E4D1C75726400ED6116 /* LaunchScreen.storyboard */; };
 		4C184E5A1C75726400ED6116 /* BombBlocksSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C184E591C75726400ED6116 /* BombBlocksSwiftTests.swift */; };
 		4C184E651C75726400ED6116 /* BombBlocksSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C184E641C75726400ED6116 /* BombBlocksSwiftUITests.swift */; };
+		4C7F05171C7AFDA00029FEA7 /* BlockNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */; };
+		4C7F05191C7AFEA60029FEA7 /* BoardNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		4C184E601C75726400ED6116 /* BombBlocksSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BombBlocksSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C184E641C75726400ED6116 /* BombBlocksSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BombBlocksSwiftUITests.swift; sourceTree = "<group>"; };
 		4C184E661C75726400ED6116 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockNode.swift; sourceTree = "<group>"; };
+		4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +113,8 @@
 				4C184E4B1C75726400ED6116 /* Assets.xcassets */,
 				4C184E4D1C75726400ED6116 /* LaunchScreen.storyboard */,
 				4C184E501C75726400ED6116 /* Info.plist */,
+				4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */,
+				4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */,
 			);
 			path = BombBlocksSwift;
 			sourceTree = "<group>";
@@ -266,7 +272,9 @@
 			files = (
 				4C184E451C75726400ED6116 /* GameScene.swift in Sources */,
 				4C184E471C75726400ED6116 /* GameViewController.swift in Sources */,
+				4C7F05191C7AFEA60029FEA7 /* BoardNode.swift in Sources */,
 				4C184E411C75726400ED6116 /* AppDelegate.swift in Sources */,
+				4C7F05171C7AFDA00029FEA7 /* BlockNode.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,6 +507,7 @@
 				4C184E6B1C75726400ED6116 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4C184E6C1C75726400ED6116 /* Build configuration list for PBXNativeTarget "BombBlocksSwiftTests" */ = {
 			isa = XCConfigurationList;
@@ -507,6 +516,7 @@
 				4C184E6E1C75726400ED6116 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4C184E6F1C75726400ED6116 /* Build configuration list for PBXNativeTarget "BombBlocksSwiftUITests" */ = {
 			isa = XCConfigurationList;
@@ -515,6 +525,7 @@
 				4C184E711C75726400ED6116 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
