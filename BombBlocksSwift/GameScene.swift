@@ -69,28 +69,28 @@ class GameScene: SKScene {
         case UISwipeGestureRecognizerDirection.Right:
             for var nodeIndex :Int = count ; nodeIndex >= 0  ; nodeIndex-- {
                 if (nodeIndex % 4 != 3) {
-                    moveBlockNode(withAction: SKAction.moveByX(CGFloat(boardNode.blockSize + boardNode.blockGap * 2), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 1)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(CGFloat(boardNode.blockSize + boardNode.moveGap * 2), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 1)
                 }
             }
             break
         case UISwipeGestureRecognizerDirection.Down:
             for var nodeIndex :Int = count ; nodeIndex >= 0  ; nodeIndex-- {
                 if (nodeIndex  < 12) {
-                    moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat((boardNode.blockSize + boardNode.blockGap * 2) * -1), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 4)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat((boardNode.blockSize + boardNode.moveGap * 2) * -1), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 4)
                 }
             }
             break
         case UISwipeGestureRecognizerDirection.Left:
             for var nodeIndex :Int = 0 ; nodeIndex <= count ; nodeIndex++ {
                 if (nodeIndex % 4 != 0) {
-                    moveBlockNode(withAction: SKAction.moveByX(CGFloat((boardNode.blockSize + boardNode.blockGap * 2) * -1), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 1)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(CGFloat((boardNode.blockSize + boardNode.moveGap * 2) * -1), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 1)
                 }
             }
             break
         case UISwipeGestureRecognizerDirection.Up:
             for var nodeIndex :Int = 0 ; nodeIndex <= count ; nodeIndex++ {
                 if (nodeIndex > 3) {
-                    moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat(boardNode.blockSize + boardNode.blockGap * 2), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 4)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat(boardNode.blockSize + boardNode.moveGap * 2), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 4)
                 }
             }
             break
@@ -104,12 +104,5 @@ class GameScene: SKScene {
             boardNode.popBlockNode()
         }
     }
-    
-    func moveBlockNode(withAction action:SKAction , fromCurrent currentIndex:Int , toNeighbour neighbourIndex:Int) {
-        
-        if (boardNode.blockNodeContainer[neighbourIndex] == nil && boardNode.blockNodeContainer[currentIndex] != nil) {
-            boardNode.blockNodeContainer[currentIndex]!.runAction(action )
-            swap(&boardNode.blockNodeContainer[currentIndex], &boardNode.blockNodeContainer[neighbourIndex])
-        }
-    }
+
 }
