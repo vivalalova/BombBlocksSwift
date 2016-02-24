@@ -6,8 +6,12 @@
 //  Copyright © 2016年 MarriageKiller. All rights reserved.
 //
 
-import Foundation
+//import Foundation
 import SpriteKit
+
+protocol ScoreDelegate {
+    func changeScore()
+}
 
 class BoardNode:SKShapeNode {
     
@@ -21,14 +25,17 @@ class BoardNode:SKShapeNode {
     var boardSize: CGFloat
     var blockNodeContainer = [BlockNode?](count: 16, repeatedValue: nil)
     var blockNodeCoordinates = [CGRect]()
+    var delegate: ScoreDelegate?
     
     // MARK:INIT
-    override init() {
+    init(posX:CGFloat , posY:CGFloat) {
         let sizeModifer = 26;
         self.blockSize = cellSize - sizeModifer
         self.moveGap = blockGap + sizeModifer/2
         self.boardSize = CGFloat(matrix * 2 * blockGap + cellSize * matrix)
         super.init()
+        self.drawBoard(posX, posY: posY)
+        self.createBlockCoordinates()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -39,7 +46,7 @@ class BoardNode:SKShapeNode {
     func drawBoard(posX:CGFloat , posY:CGFloat) {
         
         let pathToDraw : CGMutablePathRef = CGPathCreateMutable()
-        CGPathAddPath(pathToDraw, nil, UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: boardSize, height: boardSize), cornerRadius: CGFloat(cellSize/6)).CGPath)
+        CGPathAddPath(pathToDraw, nil, UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: boardSize, height: boardSize), cornerRadius: 0).CGPath)
         
         // Draw path for board inner outline
         let startY = matrix*cellSize+blockGap*(matrix*2);
@@ -59,7 +66,7 @@ class BoardNode:SKShapeNode {
         self.path = pathToDraw
         self.position = CGPointMake( (posX - boardSize)/2, (posY - boardSize)/2 )
         self.strokeColor = UIColor.whiteColor()
-        self.lineWidth = 3
+        self.lineWidth = 2
     }
     
     func createBlockCoordinates() {
@@ -113,45 +120,60 @@ class BoardNode:SKShapeNode {
         removeBlockFromBoard()
         
         // Populate available cell to add new block node
-        var emptyNodeIndexContainer = createemptyNodeIndexContainer()
+        var emptyNodeIndexContainer = createEmptyNodeIndexContainer()
         
-        /* Create random block node */
-        // Get random index which has empty block node on board
-        let randomIndex = Int(arc4random_uniform(UInt32(emptyNodeIndexContainer.count)))
-        let emptyNodeIndex = emptyNodeIndexContainer[randomIndex]
+        if (emptyNodeIndexContainer.count != 0) {
         
-        let chooseNode = Int(arc4random_uniform(UInt32(3)))
-        var blockNode = BlockNode()
-        
-        switch chooseNode {
-        case 0 :
-            blockNode = BlockNode(rect: blockNodeCoordinates[emptyNodeIndex], cornerRadius: CGFloat(cellSize/6))
-            break
-        case 1:
-            blockNode = BlockNode(ovalInRec: blockNodeCoordinates[emptyNodeIndex])
-            break
-        case 2:
-            blockNode = BlockNode(triangleInRec: blockNodeCoordinates[emptyNodeIndex])
-            break
-        default :
-            break
-        }
-        // Add new block to board
-        self.addChild(blockNode);
-        blockNodeContainer[emptyNodeIndex] = blockNode
-        
-        // TODO: Need animation when adding child
-        // TODO: Need completion block to check if game is over when board is full of block nodes
-    
-        if (emptyNodeIndexContainer.count == 1) {
-            removeBlockFromBoard()
-            if (createemptyNodeIndexContainer().count == 0) {
-                resetBoard()
+            /* Create random block node */
+            
+            // Get random index which has empty block node on board
+            let randomIndex = Int(arc4random_uniform(UInt32(emptyNodeIndexContainer.count)))
+            let emptyNodeIndex = emptyNodeIndexContainer[randomIndex]
+            
+            let chooseNode = Int(arc4random_uniform(UInt32(4)))
+            var blockNode : BlockNode?
+            
+            switch chooseNode {
+            case 0 :
+                blockNode = BlockNode(rect: blockNodeCoordinates[emptyNodeIndex],color: UIColor.blueColor())
+                break
+            case 1:
+                blockNode = BlockNode(rect: blockNodeCoordinates[emptyNodeIndex],color: UIColor.redColor())
+                break
+            case 2:
+                blockNode = BlockNode(rect: blockNodeCoordinates[emptyNodeIndex],color: UIColor.yellowColor())
+                break
+            case 3:
+                blockNode = BlockNode(rect: blockNodeCoordinates[emptyNodeIndex],color: UIColor.greenColor())
+                break
+            default :
+                break
+            }
+            
+            /* Add new block to board */
+            self.addChild(blockNode!);
+            blockNodeContainer[emptyNodeIndex] = blockNode
+            
+            /* Animation when adding child */
+            if (emptyNodeIndexContainer.count != 1) {
+                blockNode?.PopBlockAnimation(nil)
+                
+            } else {
+                
+                /* Completion block to check if game is over when board is full of block nodes */
+                blockNode?.PopBlockAnimation({ () -> Void in
+                    removeBlockFromBoard()
+                    if (createEmptyNodeIndexContainer().count == 0) {
+                        // TODO: Game Over!
+                        //resetBoard()
+                    }
+                    
+                }())
             }
         }
     }
     
-    func createemptyNodeIndexContainer()->[Int] {
+    func createEmptyNodeIndexContainer()->[Int] {
         var emptyNodeIndexContainer = [Int]()
         for var nodeIndex :Int = 0 ; nodeIndex < blockNodeContainer.count ; nodeIndex++ {
             let blockNode = blockNodeContainer[nodeIndex];
@@ -240,10 +262,12 @@ class BoardNode:SKShapeNode {
                 blockNode.removeFromParent()
                 blockNodeContainer[removeIndex!] = nil
             }
+            delegate?.changeScore()
         }
     }
     
     func resetBoard() {
+        
         self.removeAllChildren()
         blockNodeContainer = [BlockNode?](count: 16, repeatedValue: nil)
         popBlockNode()

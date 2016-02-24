@@ -9,22 +9,32 @@
 import SpriteKit
 import Foundation
 
-let boardNode = BoardNode()
-
-class GameScene: SKScene {
+class GameScene: SKScene , ButtonActionDelegate  , ScoreDelegate {
+    
+    var boardNode : BoardNode!
+    var resetButtonNode : ButtonNode!
+    var scoreNode : ScoreNode!
+    
     override func didMoveToView(view: SKView) {
+        
+        self.backgroundColor = UIColor.blackColor()
 
         /* Create board layout */
-        boardNode.drawBoard(CGRectGetWidth(self.frame), posY: CGRectGetWidth(self.frame))
-        
-        /* Create board coordinates */
-        boardNode.createBlockCoordinates()
+        boardNode = BoardNode.init(posX: CGRectGetWidth(self.frame), posY: CGRectGetHeight(self.frame))
+        boardNode.delegate = self
+        self.addChild(boardNode!)
 
-        /* Add board to Scene */
-        self.addChild(boardNode)
+        /* Add reset buttons to Scene */
+        resetButtonNode = ButtonNode(rect: CGRectMake(0, 0, 100, 50), cornerRadius: 10 , viewRect:self.frame , buttonText:"Reset")
+        resetButtonNode.delegate = self
+        self.addChild(resetButtonNode!)
+        
+        /* Set Score label */
+        scoreNode = ScoreNode(nodeRect: CGRectMake(0, 0, 100, 50), cornerRadius: 10, viewRect: self.frame, initialScore: 0)
+        self.addChild(scoreNode)
         
         /* Create random block node */
-        boardNode.popBlockNode()
+        boardNode!.popBlockNode()
         
         /* Add Swipe gesture recognizer */
         let swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
@@ -47,6 +57,7 @@ class GameScene: SKScene {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
        /* Called when a touch begins */
+ 
     }
    
     override func update(currentTime: CFTimeInterval) {
@@ -63,34 +74,34 @@ class GameScene: SKScene {
     func decideMoveDirection(direction:UISwipeGestureRecognizerDirection) {
         
         let moveDuration = 0.2
-        let count = boardNode.blockNodeContainer.count - 1;
+        let count = boardNode!.blockNodeContainer.count - 1;
         
         switch direction {
         case UISwipeGestureRecognizerDirection.Right:
             for var nodeIndex :Int = count ; nodeIndex >= 0  ; nodeIndex-- {
                 if (nodeIndex % 4 != 3) {
-                    boardNode.moveBlockNode(withAction: SKAction.moveByX(CGFloat(boardNode.blockSize + boardNode.moveGap * 2), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 1)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(CGFloat(boardNode!.blockSize + boardNode!.moveGap * 2), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 1)
                 }
             }
             break
         case UISwipeGestureRecognizerDirection.Down:
             for var nodeIndex :Int = count ; nodeIndex >= 0  ; nodeIndex-- {
                 if (nodeIndex  < 12) {
-                    boardNode.moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat((boardNode.blockSize + boardNode.moveGap * 2) * -1), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 4)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat((boardNode!.blockSize + boardNode!.moveGap * 2) * -1), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex + 4)
                 }
             }
             break
         case UISwipeGestureRecognizerDirection.Left:
             for var nodeIndex :Int = 0 ; nodeIndex <= count ; nodeIndex++ {
                 if (nodeIndex % 4 != 0) {
-                    boardNode.moveBlockNode(withAction: SKAction.moveByX(CGFloat((boardNode.blockSize + boardNode.moveGap * 2) * -1), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 1)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(CGFloat((boardNode!.blockSize + boardNode!.moveGap * 2) * -1), y: 0, duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 1)
                 }
             }
             break
         case UISwipeGestureRecognizerDirection.Up:
             for var nodeIndex :Int = 0 ; nodeIndex <= count ; nodeIndex++ {
                 if (nodeIndex > 3) {
-                    boardNode.moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat(boardNode.blockSize + boardNode.moveGap * 2), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 4)
+                    boardNode.moveBlockNode(withAction: SKAction.moveByX(0, y: CGFloat(boardNode!.blockSize + boardNode!.moveGap * 2), duration: moveDuration), fromCurrent: nodeIndex , toNeighbour: nodeIndex - 4)
                 }
             }
             break
@@ -101,8 +112,17 @@ class GameScene: SKScene {
         // Pop new block after each swipe
         let delay = dispatch_time( DISPATCH_TIME_NOW, Int64(Double(moveDuration*2) * Double(NSEC_PER_SEC)) )
         dispatch_after(delay, dispatch_get_main_queue()) {
-            boardNode.popBlockNode()
+            self.boardNode!.popBlockNode()
         }
+    }
+    
+    func resetGame() {
+        scoreNode.resetScore()
+        boardNode!.resetBoard()
+    }
+    
+    func changeScore() {
+        scoreNode.changeScore()
     }
 
 }
