@@ -16,26 +16,23 @@ class ButtonNode: SKShapeNode {
     
     var delegate: ButtonActionDelegate?
     
-    init(rect: CGRect, cornerRadius: CGFloat , viewRect:CGRect , buttonText:String) {
+    init(rect: CGRect, viewRect:CGRect , buttonText:String) {
 
         super.init()
         self.userInteractionEnabled = true
-        self.path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius).CGPath
-        self.position = CGPointMake(
-            (viewRect.size.width - rect.size.width)/2,
-            (viewRect.size.height - rect.size.height)/16)
+        self.path = UIBezierPath(roundedRect: rect, cornerRadius: rect.size.width/2).CGPath
+        self.position = CGPointMake( (viewRect.size.width - rect.size.width) / 2 , (viewRect.size.height - rect.size.height)/2 - 90)
         self.fillColor = UIColor.whiteColor()
         self.strokeColor = UIColor.whiteColor()
         self.name = "resetButton"
         
         let buttonLabel = SKLabelNode(fontNamed:"TamilSangamMN-Bold")
         buttonLabel.text = buttonText;
-        buttonLabel.fontSize = 30;
-        buttonLabel.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
-        buttonLabel.position = CGPointMake(rect.size.width/2 , rect.size.height/2-10)
+        buttonLabel.fontSize = 50;
+        buttonLabel.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Center
+        buttonLabel.position = CGPointMake(rect.size.width/2 , rect.size.height/2)
         buttonLabel.fontColor = UIColor.blackColor()
         self.addChild(buttonLabel)
-
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

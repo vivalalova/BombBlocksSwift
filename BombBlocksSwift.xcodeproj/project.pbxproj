@@ -19,6 +19,8 @@
 		4C7F05171C7AFDA00029FEA7 /* BlockNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */; };
 		4C7F05191C7AFEA60029FEA7 /* BoardNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */; };
 		4CB93EE01C7C8FBE00D18E22 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB93EDF1C7C8FBE00D18E22 /* ButtonNode.swift */; };
+		4CC56B811C7F0483001771D4 /* particle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC56B801C7F0483001771D4 /* particle.png */; };
+		4CC56B841C7F04BE001771D4 /* ExplodeParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */; };
 		4CCC94271C7D633300A599AC /* ScoreNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCC94261C7D633300A599AC /* ScoreNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +60,8 @@
 		4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockNode.swift; sourceTree = "<group>"; };
 		4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardNode.swift; sourceTree = "<group>"; };
 		4CB93EDF1C7C8FBE00D18E22 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
+		4CC56B801C7F0483001771D4 /* particle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = particle.png; path = ../particle.png; sourceTree = "<group>"; };
+		4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplodeParticle.sks; sourceTree = "<group>"; };
 		4CCC94261C7D633300A599AC /* ScoreNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,6 +113,8 @@
 		4C184E3F1C75726400ED6116 /* BombBlocksSwift */ = {
 			isa = PBXGroup;
 			children = (
+				4CC56B801C7F0483001771D4 /* particle.png */,
+				4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */,
 				4C184E401C75726400ED6116 /* AppDelegate.swift */,
 				4C184E421C75726400ED6116 /* GameScene.sks */,
 				4C184E441C75726400ED6116 /* GameScene.swift */,
@@ -252,6 +258,8 @@
 				4C184E4F1C75726400ED6116 /* LaunchScreen.storyboard in Resources */,
 				4C184E4C1C75726400ED6116 /* Assets.xcassets in Resources */,
 				4C184E4A1C75726400ED6116 /* Main.storyboard in Resources */,
+				4CC56B811C7F0483001771D4 /* particle.png in Resources */,
+				4CC56B841C7F04BE001771D4 /* ExplodeParticle.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

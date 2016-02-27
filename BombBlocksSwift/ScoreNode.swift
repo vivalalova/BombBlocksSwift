@@ -27,10 +27,9 @@ class ScoreNode: SKShapeNode {
         self.path = UIBezierPath(roundedRect: nodeRect, cornerRadius: cornerRadius).CGPath
         self.position = CGPointMake(
             (viewRect.size.width - nodeRect.size.width)/2,
-            (viewRect.size.height - nodeRect.size.height)-100)
+            (viewRect.size.height - nodeRect.size.height)-120)
         self.fillColor = UIColor.clearColor()
         self.strokeColor = UIColor.clearColor()
-        
         self.addChild(buttonLabel)
 
     }
