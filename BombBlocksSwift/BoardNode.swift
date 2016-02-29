@@ -10,7 +10,7 @@
 import SpriteKit
 
 protocol BoardDelegate {
-    func changeScore()
+    func changeScore(addScore:Double)
     func popNextNode()
     func getNextNodeBlockType()->BlockNode.BlockType
     func gameOver()
@@ -26,7 +26,7 @@ class BoardNode:SKShapeNode {
     // MARK:Variables
     var matrix  = 4
     var blockGap = 5
-    var cellSize  = 90
+    var cellSize  = 0
     var containerSize = 16
     var blockSize : Int
     var moveGap : Int
@@ -39,7 +39,8 @@ class BoardNode:SKShapeNode {
     
     // MARK:INIT
     init(posX:CGFloat , posY:CGFloat) {
-        let sizeModifer = 26;
+        let sizeModifer = 8;
+        cellSize = Int(UIScreen.mainScreen().bounds.width * CGFloat(0.25))
         self.blockSize = cellSize - sizeModifer
         self.moveGap = blockGap + sizeModifer/2
         self.boardSize = CGFloat(matrix * 2 * blockGap + cellSize * matrix)
@@ -117,7 +118,7 @@ class BoardNode:SKShapeNode {
     func drawBoard(posX:CGFloat , posY:CGFloat) {
         
         let pathToDraw : CGMutablePathRef = CGPathCreateMutable()
-        CGPathAddPath(pathToDraw, nil, UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: boardSize, height: boardSize), cornerRadius: 15).CGPath)
+        CGPathAddPath(pathToDraw, nil, UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: boardSize, height: boardSize), cornerRadius: boardSize/10).CGPath)
         
         // Draw path for board inner outline
         let startY = matrix*cellSize+blockGap*(matrix*2);
@@ -136,8 +137,8 @@ class BoardNode:SKShapeNode {
 
         self.path = pathToDraw
         self.position = CGPointMake( (posX - boardSize)/2, (posY - boardSize)/2 )
-        self.strokeColor = UIColor(white: 0.3, alpha: 1)
-        self.lineWidth = 6
+        self.strokeColor = UIColor(white: 0.15, alpha: 1)
+        self.lineWidth = 26
     }
     
     func createBlockCoordinates() {
@@ -175,6 +176,7 @@ class BoardNode:SKShapeNode {
                 blockNodeCoordinates.append(blockNodeRect)
             }
         }
+        setupBackgroundNode()
     }
     
     func moveBlockNode(withAction action:SKAction , fromCurrent currentIndex:Int , toNeighbour neighbourIndex:Int)->Bool {
@@ -298,7 +300,7 @@ class BoardNode:SKShapeNode {
                     
                     self.removeBlocksFromBoard(newCancelBlocksArray)
                     
-                    self.updateScore()
+                    self.updateScore(15)
 
                     }, expandType: expandType)
                 
@@ -321,7 +323,7 @@ class BoardNode:SKShapeNode {
                     
                     self.removeBlocksFromBoard(newCancelBlocksArray)
                     
-                    self.updateScore()
+                    self.updateScore(25)
                     
                     }, expandType: expandType)
             }
@@ -440,8 +442,17 @@ class BoardNode:SKShapeNode {
         }
     }
     
-    func updateScore() {
-        delegate?.changeScore()
+    func updateScore(addScore:Double) {
+        delegate?.changeScore(addScore)
+    }
+    
+    func setupBackgroundNode() {
+        for nodeCoordinate in blockNodeCoordinates {
+            let backgroupdBlock = BlockNode(rect: nodeCoordinate)
+            backgroupdBlock.setBlockType(BlockNode.BlockType.Background)
+            backgroupdBlock.hidden = false
+            self.addChild(backgroupdBlock)
+        }
     }
     
     // Mark: Reset
@@ -450,6 +461,7 @@ class BoardNode:SKShapeNode {
         delegate?.gameRestart()
         self.removeAllChildren()
         blockNodeContainer = [BlockNode?](count: 16, repeatedValue: nil)
+        setupBackgroundNode()
         popBlockNode()
     }
     

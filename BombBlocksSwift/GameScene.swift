@@ -21,14 +21,15 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
     override func didMoveToView(view: SKView) {
         
         self.backgroundColor = UIColor.blackColor()
-
+        
         /* Create board layout */
         boardNode = BoardNode.init(posX: CGRectGetWidth(self.frame), posY: CGRectGetHeight(self.frame))
         boardNode.delegate = self
         self.addChild(boardNode!)
         
         /* Add next node */
-        nextNode = BlockNode(nextNodeRect: CGRectMake(0,0,50,50), viewSize: self.frame.size)
+        let nextNodeSize = UIScreen.mainScreen().bounds.width * CGFloat(0.175)
+        nextNode = BlockNode(nextNodeRect: CGRectMake(0,0,nextNodeSize,nextNodeSize), viewSize: self.frame.size)
         self.addChild(nextNode)
         
         /* Set Score label */
@@ -54,7 +55,7 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
         addChild(resetButtonNode!)
 
         /* Game over label node */
-        gameOverLabel = SKLabelNode(fontNamed:"TamilSangamMN-Bold")
+        gameOverLabel = SKLabelNode(fontNamed:"AmericanTypewriter-Bold")
         gameOverLabel.text = "Game Over";
         gameOverLabel.fontSize = 75;
         gameOverLabel.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
@@ -103,8 +104,8 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
         boardNode!.resetBoard()
     }
     
-    func changeScore() {
-        scoreNode.changeScore()
+    func changeScore(addScore:Double) {
+        scoreNode.changeScore(addScore)
     }
     
     func popNextNode() {

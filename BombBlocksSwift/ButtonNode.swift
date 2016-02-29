@@ -26,7 +26,7 @@ class ButtonNode: SKShapeNode {
         self.strokeColor = UIColor.whiteColor()
         self.name = "resetButton"
         
-        let buttonLabel = SKLabelNode(fontNamed:"TamilSangamMN-Bold")
+        let buttonLabel = SKLabelNode(fontNamed:"AmericanTypewriter-Bold")
         buttonLabel.text = buttonText;
         buttonLabel.fontSize = 50;
         buttonLabel.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Center

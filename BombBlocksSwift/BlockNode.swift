@@ -12,7 +12,7 @@ import SpriteKit
 class BlockNode:SKShapeNode {
     
     enum BlockType :Int {
-        case Blue = 0 ,Red = 1,Yellow = 2, Green = 3
+        case Blue = 0 ,Red = 1,Yellow = 2, Green = 3 , Background = 4
     }
     
     enum ExpandType {
@@ -21,29 +21,30 @@ class BlockNode:SKShapeNode {
     
     var type :BlockType!
     var nextBlock :BlockNode?
+    let blockCornerRadius : CGFloat!
     
     init(rect: CGRect) {
         
-        super.init()
-        let blockCornerRadius : CGFloat = 10
         let pathOrigin = CGFloat(rect.size.width / -2)
         let pathSizeWidth = rect.size.width
         let pathSizeHeight = rect.size.height
         let positionX = rect.origin.x - pathOrigin
         let positionY = rect.origin.y - pathOrigin
+        blockCornerRadius = pathSizeWidth / 4
+        super.init()
         self.position = CGPointMake(positionX, positionY)
         setStyle(UIBezierPath(roundedRect: CGRectMake(pathOrigin, pathOrigin, pathSizeWidth, pathSizeHeight), cornerRadius: blockCornerRadius).CGPath)
     }
     
     init(nextNodeRect: CGRect, viewSize: CGSize) {
         
+        blockCornerRadius = nextNodeRect.size.width / 4
         super.init()
-        let blockCornerRadius : CGFloat = 10
-        self.position =  CGPointMake( (viewSize.width - nextNodeRect.size.width) / 2 , (viewSize.height - nextNodeRect.size.height) / 10)
+        position =  CGPointMake( (viewSize.width - nextNodeRect.size.width) / 2 , (viewSize.height - nextNodeRect.size.height) / 10)
         self.path = UIBezierPath(roundedRect: nextNodeRect, cornerRadius: blockCornerRadius).CGPath
         self.hidden = false
-        self.strokeColor = UIColor(white: 0.3, alpha: 1)
-        self.lineWidth = 8
+        self.strokeColor = UIColor(white: 0.15, alpha: 1)
+        self.lineWidth = 12
         self.fillColor = UIColor.clearColor()
         nextBlock = BlockNode(rect: CGRectMake(2,2,nextNodeRect.size.width-4,nextNodeRect.size.height-4))
         nextBlock!.hidden = false
@@ -90,6 +91,8 @@ class BlockNode:SKShapeNode {
         case BlockType.Yellow :
             color = UIColor(red: 217/255, green: 186/255, blue: 95/255, alpha: 1)
             break
+        case BlockType.Background :
+            color = UIColor.blackColor()
         }
         
         self.fillColor = color
