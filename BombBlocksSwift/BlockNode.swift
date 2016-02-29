@@ -117,7 +117,7 @@ class BlockNode:SKShapeNode {
         self.runAction(scaleDownAction)
     }
     
-    func expandBlockAnimation(createCancelBlock:()->() , expandType:ExpandType) {
+    func expandBlockAnimation(createCancelBlock:()->(), expandType:ExpandType) {
         
         var action : SKAction!
         let interval : NSTimeInterval = 0.25

@@ -220,13 +220,15 @@ class BoardNode:SKShapeNode {
                 self.delegate?.popNextNode()
                 
                 /* Check if any blocks can be removed */
-                self.removeBlockFromBoard()
-                
-                /* Call game over when board is full */
-                if (self.createEmptyNodeIndexContainer().count == 0) {
-                    
-                    self.delegate?.gameOver()
-                }
+                self.cancelBlock({ () -> () in
+                    /* Call game over when board is full */
+
+                    if (self.createEmptyNodeIndexContainer().count == 0) {
+                        
+                        self.delegate?.gameOver()
+                    }
+
+                })
             })
         }
     }
@@ -243,7 +245,9 @@ class BoardNode:SKShapeNode {
     }
     
     // MARK: Block remove procedure
-    func removeBlockFromBoard() {
+    func cancelBlock(completion:()->()) {
+        
+        var finalRemoveArray = [[BlockNode]]()
         
         /* Remove Check */
         for index in 0...3 {
@@ -251,63 +255,114 @@ class BoardNode:SKShapeNode {
             // Col Check
             var startIndex = index
             var endIndex = startIndex + 12
-            executeBlockRemoval(startIndex, endIndex: endIndex, cancelType: BlockCancelType.Col , neighbourOffset: 4)
+            finalRemoveArray.append( executeBlockRemoval(startIndex, endIndex: endIndex , neighbourOffset: 4) )
             
             // Row Check
             startIndex = index * 4
             endIndex = startIndex + 3
-            executeBlockRemoval(startIndex, endIndex: endIndex, cancelType: BlockCancelType.Row , neighbourOffset: 1)
+            finalRemoveArray.append( executeBlockRemoval(startIndex, endIndex: endIndex , neighbourOffset: 1) )
             
+        }
+        
+        /* Apply expand animation to new cancel blocks */
+        for removeBlocks in finalRemoveArray {
+            
+            /* Add new cancel blocks to board */
+            var newCancelBlocksArray = [BlockNode]()
+            
+            for blockNode in removeBlocks {
+                
+                let newCancelBlockNode = BlockNode(rect: blockNodeCoordinates[ blockIndex(blockNode)! ])
+                newCancelBlockNode.setBlockType(blockNode.type)
+                newCancelBlockNode.hidden = false
+                addChild(newCancelBlockNode)
+                newCancelBlocksArray.append(newCancelBlockNode)
+                blockNode.removeFromParent()
+            }
+
+            let blocksCount = newCancelBlocksArray.count
+            
+            if (blocksCount == 3) {
+                
+                var expandType = BlockNode.ExpandType.Horizontal
+                let expandTypeCheck = blockIndex(removeBlocks[0])! - blockIndex(removeBlocks[1])!
+                
+                if ( expandTypeCheck > 3) {
+                    expandType = BlockNode.ExpandType.Vertical
+                }
+                
+                newCancelBlocksArray[1].expandBlockAnimation({ () -> () in
+                    
+                    /* Perform explode animation */
+                    self.cancelBlockAnimation(newCancelBlocksArray , explodeColor: removeBlocks[0].fillColor)
+                    
+                    self.removeBlocksFromBoard(newCancelBlocksArray)
+                    
+                    self.updateScore()
+
+                    }, expandType: expandType)
+                
+            } else if (blocksCount == 4) {
+                
+                var expandType = BlockNode.ExpandType.Horizontal
+                
+                let expandTypeCheck = blockIndex(removeBlocks[0])! - blockIndex(removeBlocks[1])!
+                
+                if ( expandTypeCheck > 3) {
+                
+                    expandType = BlockNode.ExpandType.Vertical
+                }
+
+                newCancelBlocksArray[1].expandBlockAnimation({} , expandType: expandType)
+                newCancelBlocksArray[2].expandBlockAnimation({ ()->() in
+                    
+                    /* Perform explode animation */
+                    self.cancelBlockAnimation(newCancelBlocksArray , explodeColor: removeBlocks[0].fillColor)
+                    
+                    self.removeBlocksFromBoard(newCancelBlocksArray)
+                    
+                    self.updateScore()
+                    
+                    }, expandType: expandType)
+            }
+        }
+        
+        /* Remove orignal cancel blocks from container*/
+        self.removeOriginalCancelBlocksFromContainer(finalRemoveArray)
+        
+        completion()
+    }
+    
+    func removeOriginalCancelBlocksFromContainer(finalRemoveArray:[[BlockNode]]) {
+        
+        /* Get original unique blocks to be removed */
+        var uniqueRemoveBlocks = [BlockNode]()
+        
+        for removeBlocks in finalRemoveArray {
+            uniqueRemoveBlocks += removeBlocks
+        }
+        
+        uniqueRemoveBlocks = Array(Set(uniqueRemoveBlocks))
+
+        /* Remove original cancelBlocks from container */
+        for blockNode in uniqueRemoveBlocks {
+            
+            if let removeIndex = blockIndex(blockNode) {
+                blockNodeContainer[removeIndex] = nil
+            }
         }
     }
     
-    func executeBlockRemoval(startIndex:Int , endIndex:Int , cancelType:BlockCancelType , neighbourOffset:Int) {
+    func executeBlockRemoval(startIndex:Int , endIndex:Int , neighbourOffset:Int)->[BlockNode] {
         
-        var type : BlockNode.ExpandType!
         let cancelBlocks = blockCancelCheck(startIndex, endIndex: endIndex, neighbourOffset: neighbourOffset)
-        var confirmedBlocksToCancel = blockTypeCheck(cancelBlocks)
+        let confirmedBlocksToCancel = blockTypeCheck(cancelBlocks)
         let confirmedBlocksToCancelCount = confirmedBlocksToCancel.count
         
-        /* Get expand type */
-        switch cancelType {
-            
-        case BlockCancelType.Row :
-            type = BlockNode.ExpandType.Horizontal
-            break
-        case BlockCancelType.Col :
-            type = BlockNode.ExpandType.Vertical
-            break
-        }
-                
-        if (confirmedBlocksToCancelCount == 3) {
-            
-            /* Remove blocks from container first , so the container count can be checked correctly before animation ends */
-            let removedBlocksContainer = removeBlocksFromContainer(confirmedBlocksToCancel)
-            
-            /* Perform expand animation */
-            confirmedBlocksToCancel[1].expandBlockAnimation({ () -> () in
-                
-                /* Perform explode animation */
-                self.cancelBlockAnimation(removedBlocksContainer , explodeColor: confirmedBlocksToCancel[0].fillColor)
-                
-                self.removeBlocksFromBoard(confirmedBlocksToCancel)
-                
-            } , expandType: type)
-            
-        } else if (confirmedBlocksToCancelCount == 4){
-            
-            let removedBlocksContainer = removeBlocksFromContainer(confirmedBlocksToCancel)
-
-            /* Perform expand animation */
-            confirmedBlocksToCancel[1].expandBlockAnimation({} , expandType: type)
-            confirmedBlocksToCancel[2].expandBlockAnimation({ () -> () in
-                
-                /* Perform explode animation */
-                self.cancelBlockAnimation(removedBlocksContainer , explodeColor: confirmedBlocksToCancel[0].fillColor)
-                
-                self.removeBlocksFromBoard(confirmedBlocksToCancel)
-                
-            }, expandType: type)
+        if (confirmedBlocksToCancelCount >= 3) {
+            return confirmedBlocksToCancel
+        } else {
+            return []
         }
     }
     
@@ -362,11 +417,11 @@ class BoardNode:SKShapeNode {
         return []
     }
     
-    func cancelBlockAnimation(blocksToCancel:[Int] , explodeColor:UIColor) {
+    func cancelBlockAnimation(blocksToCancel:[BlockNode] , explodeColor:UIColor) {
         
-        for blockNodeIndex in blocksToCancel {
+        for blockNode in blocksToCancel {
                 
-            let position = blockNodeCoordinates[blockNodeIndex].origin
+            let position = blockNode.frame.origin
             
             if let particles = SKEmitterNode(fileNamed: "ExplodeParticle.sks") {
                 particles.position = CGPointMake(position.x + CGFloat(blockSize/2) , position.y + CGFloat(blockSize/2))
@@ -383,24 +438,10 @@ class BoardNode:SKShapeNode {
         for blockNode in cancelBlocks {
             blockNode.removeFromParent()
         }
-        delegate?.changeScore()
     }
     
-    func removeBlocksFromContainer(cancelBlocks:[BlockNode])->[Int] {
-        
-        var removedBlocksContainer = [Int]()
-        
-        for blockNode in cancelBlocks {
-            
-            if let removeIndex = blockIndex(blockNode) {
-                blockNodeContainer[removeIndex] = nil
-                
-                if (blockNode == cancelBlocks[0] ||  blockNode == cancelBlocks[cancelBlocks.count - 1]) {
-                    removedBlocksContainer.append(removeIndex)
-                }
-            }
-        }
-        return removedBlocksContainer
+    func updateScore() {
+        delegate?.changeScore()
     }
     
     // Mark: Reset
