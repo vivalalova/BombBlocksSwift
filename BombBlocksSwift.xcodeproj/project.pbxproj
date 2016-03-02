@@ -16,12 +16,12 @@
 		4C184E4F1C75726400ED6116 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C184E4D1C75726400ED6116 /* LaunchScreen.storyboard */; };
 		4C184E5A1C75726400ED6116 /* BombBlocksSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C184E591C75726400ED6116 /* BombBlocksSwiftTests.swift */; };
 		4C184E651C75726400ED6116 /* BombBlocksSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C184E641C75726400ED6116 /* BombBlocksSwiftUITests.swift */; };
-		4C7F05171C7AFDA00029FEA7 /* BlockNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */; };
 		4C7F05191C7AFEA60029FEA7 /* BoardNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */; };
 		4CB93EE01C7C8FBE00D18E22 /* ButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB93EDF1C7C8FBE00D18E22 /* ButtonNode.swift */; };
 		4CC56B811C7F0483001771D4 /* particle.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC56B801C7F0483001771D4 /* particle.png */; };
 		4CC56B841C7F04BE001771D4 /* ExplodeParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */; };
 		4CCC94271C7D633300A599AC /* ScoreNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCC94261C7D633300A599AC /* ScoreNode.swift */; };
+		4CD819FF1C8583E40095322D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD819FE1C8583E40095322D /* Block.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,12 +57,12 @@
 		4C184E601C75726400ED6116 /* BombBlocksSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BombBlocksSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C184E641C75726400ED6116 /* BombBlocksSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BombBlocksSwiftUITests.swift; sourceTree = "<group>"; };
 		4C184E661C75726400ED6116 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockNode.swift; sourceTree = "<group>"; };
 		4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardNode.swift; sourceTree = "<group>"; };
 		4CB93EDF1C7C8FBE00D18E22 /* ButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonNode.swift; sourceTree = "<group>"; };
 		4CC56B801C7F0483001771D4 /* particle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = particle.png; path = ../particle.png; sourceTree = "<group>"; };
 		4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplodeParticle.sks; sourceTree = "<group>"; };
 		4CCC94261C7D633300A599AC /* ScoreNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreNode.swift; sourceTree = "<group>"; };
+		4CD819FE1C8583E40095322D /* Block.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +123,7 @@
 				4C184E4B1C75726400ED6116 /* Assets.xcassets */,
 				4C184E4D1C75726400ED6116 /* LaunchScreen.storyboard */,
 				4C184E501C75726400ED6116 /* Info.plist */,
-				4C7F05161C7AFDA00029FEA7 /* BlockNode.swift */,
+				4CD819FE1C8583E40095322D /* Block.swift */,
 				4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */,
 				4CB93EDF1C7C8FBE00D18E22 /* ButtonNode.swift */,
 				4CCC94261C7D633300A599AC /* ScoreNode.swift */,
@@ -285,10 +285,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C184E451C75726400ED6116 /* GameScene.swift in Sources */,
+				4CD819FF1C8583E40095322D /* Block.swift in Sources */,
 				4C184E471C75726400ED6116 /* GameViewController.swift in Sources */,
 				4C7F05191C7AFEA60029FEA7 /* BoardNode.swift in Sources */,
 				4C184E411C75726400ED6116 /* AppDelegate.swift in Sources */,
-				4C7F05171C7AFDA00029FEA7 /* BlockNode.swift in Sources */,
 				4CB93EE01C7C8FBE00D18E22 /* ButtonNode.swift in Sources */,
 				4CCC94271C7D633300A599AC /* ScoreNode.swift in Sources */,
 			);

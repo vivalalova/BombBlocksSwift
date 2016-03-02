@@ -14,8 +14,8 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
     var boardNode : BoardNode!
     var resetButtonNode : ButtonNode!
     var scoreNode : ScoreNode!
-    var nextNode : BlockNode!
-    var gameOverNode : SKShapeNode!
+    var nextNode : Block!
+    var gameOverNode : SKSpriteNode!
     var gameOverLabel : SKLabelNode!
     
     override func didMoveToView(view: SKView) {
@@ -25,32 +25,31 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
         /* Create board layout */
         boardNode = BoardNode.init(posX: CGRectGetWidth(self.frame), posY: CGRectGetHeight(self.frame))
         boardNode.delegate = self
-        self.addChild(boardNode!)
+        addChild(boardNode!)
         
         /* Add next node */
-        let nextNodeSize = UIScreen.mainScreen().bounds.width * CGFloat(0.175)
-        nextNode = BlockNode(nextNodeRect: CGRectMake(0,0,nextNodeSize,nextNodeSize), viewSize: self.frame.size)
-        self.addChild(nextNode)
+        let nextNodeSize = UIScreen.mainScreen().bounds.width * CGFloat(0.25)
+        nextNode = Block(nextNodeRect: CGRectMake(0,0,nextNodeSize,nextNodeSize), viewSize: CGSizeMake(self.frame.size.width/2 , self.frame.size.height/2 - boardNode.boardSize/2 - 100))
+        addChild(nextNode)
         
         /* Set Score label */
-        scoreNode = ScoreNode(nodeRect: CGRectMake(0, 0, 100, 50), cornerRadius: 10, viewRect: self.frame, initialScore: 0)
-        self.addChild(scoreNode)
+        scoreNode = ScoreNode(nodeRect: CGRectMake(0, 0, 100, 50), cornerRadius: 10, viewSize: CGSizeMake(self.frame.size.width/2 , self.frame.size.height/2 + boardNode.boardSize/2), initialScore: 0)
+        addChild(scoreNode)
         
         /* Create random block node */
         boardNode!.popBlockNode()
         
-        gameOverNode = SKShapeNode(rect: self.frame)
-        gameOverNode.fillColor = UIColor.blackColor()
-        gameOverNode.strokeColor = UIColor.blackColor()
-        gameOverNode.alpha = 0.8
-        gameOverNode.zPosition = 1
-        gameOverNode.position = CGPointMake(0,self.frame.size.height)
+        /* Game over node */
+        gameOverNode = SKSpriteNode(color: UIColor.blackColor(), size: boardNode.frame.size)
+        gameOverNode.alpha = 0
+        gameOverNode.zPosition = 3
+        gameOverNode.position = CGPointMake(self.frame.size.width/2 , self.frame.size.height/2)
         addChild(gameOverNode)
         
         /* Add reset buttons to Scene */
         resetButtonNode = ButtonNode(rect: CGRectMake(0,0,60,60), viewRect:self.frame , buttonText:"R")
         resetButtonNode.delegate = self
-        resetButtonNode.zPosition = 2
+        resetButtonNode.zPosition = 3
         resetButtonNode.alpha = 0
         addChild(resetButtonNode!)
 
@@ -61,10 +60,9 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
         gameOverLabel.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
         gameOverLabel.position = CGPointMake(self.frame.size.width/2 , self.frame.size.height/2)
         gameOverLabel.fontColor = UIColor.whiteColor()
-        gameOverLabel.zPosition = 2
+        gameOverLabel.zPosition = 3
         gameOverLabel.alpha = 0
-        self.addChild(gameOverLabel)
-
+        addChild(gameOverLabel)
         
         /* Add Swipe gesture recognizer */
         let swipeRight = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
@@ -110,11 +108,11 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
     
     func popNextNode() {
         
-        nextNode.nextBlock?.setBlockType(nil)
+        nextNode.nextBlock?.setNextNode()
         nextNode.nextBlock?.PopNextBlockAnimation()
     }
     
-    func getNextNodeBlockType()->BlockNode.BlockType {
+    func getNextNodeBlockType()->Block.BlockType {
         
         return (nextNode.nextBlock?.type)!
     }
@@ -122,18 +120,23 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
     func gameOver() {
         
         let fadeInAction = SKAction.fadeInWithDuration(0.3)
-        gameOverNode.runAction(SKAction.moveByX(0, y: -self.frame.size.height, duration: 0.7)) { () -> Void in
-            
+        gameOverNode.runAction(SKAction.fadeAlphaTo(0.8, duration: 0.3)) { () -> Void in
             self.resetButtonNode.runAction(fadeInAction)
             self.gameOverLabel.runAction(fadeInAction)
         }
     }
     
-    func gameRestart() {
+    func gameRestart(completion:()->()) {
         
         let fadeOutAction = SKAction.fadeOutWithDuration(0.3)
         self.resetButtonNode.runAction(fadeOutAction)
         self.gameOverLabel.runAction(fadeOutAction)
-        gameOverNode.runAction(SKAction.moveByX(0, y: self.frame.size.height, duration: 0.7))
+        gameOverNode.runAction(fadeOutAction) { () -> Void in
+            completion()
+        }
+    }
+    
+    func setUserInteraction(allowInteraction:Bool) {
+        userInteractionEnabled = allowInteraction
     }
 }
