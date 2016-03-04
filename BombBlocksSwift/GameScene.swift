@@ -21,7 +21,7 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
     override func didMoveToView(view: SKView) {
         
         self.backgroundColor = UIColor.blackColor()
-        
+
         /* Create board layout */
         boardNode = BoardNode.init(posX: CGRectGetWidth(self.frame), posY: CGRectGetHeight(self.frame))
         boardNode.delegate = self
@@ -40,16 +40,16 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
         boardNode!.popBlockNode()
         
         /* Game over node */
-        gameOverNode = SKSpriteNode(color: UIColor.blackColor(), size: boardNode.frame.size)
+        gameOverNode = SKSpriteNode(color: UIColor.blackColor(), size: self.frame.size)
         gameOverNode.alpha = 0
-        gameOverNode.zPosition = 3
+        gameOverNode.zPosition = 6
         gameOverNode.position = CGPointMake(self.frame.size.width/2 , self.frame.size.height/2)
         addChild(gameOverNode)
         
         /* Add reset buttons to Scene */
         resetButtonNode = ButtonNode(rect: CGRectMake(0,0,60,60), viewRect:self.frame , buttonText:"R")
         resetButtonNode.delegate = self
-        resetButtonNode.zPosition = 3
+        resetButtonNode.zPosition = 7
         resetButtonNode.alpha = 0
         addChild(resetButtonNode!)
 
@@ -60,7 +60,7 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
         gameOverLabel.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Baseline
         gameOverLabel.position = CGPointMake(self.frame.size.width/2 , self.frame.size.height/2)
         gameOverLabel.fontColor = UIColor.whiteColor()
-        gameOverLabel.zPosition = 3
+        gameOverLabel.zPosition = 8
         gameOverLabel.alpha = 0
         addChild(gameOverLabel)
         
@@ -80,6 +80,7 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
         let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         self.view?.addGestureRecognizer(swipeDown)
+        
     }
    
     override func update(currentTime: CFTimeInterval) {
@@ -108,13 +109,23 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
     
     func popNextNode() {
         
-        nextNode.nextBlock?.setNextNode()
+        
+        if (Int(arc4random_uniform(UInt32(16))) == 1) {
+            
+            nextNode.nextBlock?.setBlockType(Block.MainType.Bomb)
+            
+        } else {
+            
+            nextNode.nextBlock?.setBlockType(Block.MainType.Normal)
+        }
+
+        
         nextNode.nextBlock?.PopNextBlockAnimation()
     }
     
-    func getNextNodeBlockType()->Block.BlockType {
+    func getNextNodeBlock()->Block {
         
-        return (nextNode.nextBlock?.type)!
+        return nextNode.nextBlock!
     }
     
     func gameOver() {
@@ -137,6 +148,6 @@ class GameScene: SKScene , ButtonActionDelegate  , BoardDelegate {
     }
     
     func setUserInteraction(allowInteraction:Bool) {
-        userInteractionEnabled = allowInteraction
+        self.view!.userInteractionEnabled = allowInteraction
     }
 }

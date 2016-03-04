@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C0D503C1C891A0400A8C4F1 /* TextureStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0D503B1C891A0400A8C4F1 /* TextureStore.swift */; };
 		4C184E411C75726400ED6116 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C184E401C75726400ED6116 /* AppDelegate.swift */; };
 		4C184E431C75726400ED6116 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4C184E421C75726400ED6116 /* GameScene.sks */; };
 		4C184E451C75726400ED6116 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C184E441C75726400ED6116 /* GameScene.swift */; };
@@ -22,6 +23,8 @@
 		4CC56B841C7F04BE001771D4 /* ExplodeParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */; };
 		4CCC94271C7D633300A599AC /* ScoreNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCC94261C7D633300A599AC /* ScoreNode.swift */; };
 		4CD819FF1C8583E40095322D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD819FE1C8583E40095322D /* Block.swift */; };
+		4CD8F3DC1C86A7DB008ECC67 /* SparkParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 4CD8F3DA1C86A7DB008ECC67 /* SparkParticle.sks */; };
+		4CD8F3DD1C86A7DB008ECC67 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD8F3DB1C86A7DB008ECC67 /* spark.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4C0D503B1C891A0400A8C4F1 /* TextureStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextureStore.swift; sourceTree = "<group>"; };
 		4C184E3D1C75726400ED6116 /* BombBlocksSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BombBlocksSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C184E401C75726400ED6116 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4C184E421C75726400ED6116 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -63,6 +67,8 @@
 		4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ExplodeParticle.sks; sourceTree = "<group>"; };
 		4CCC94261C7D633300A599AC /* ScoreNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScoreNode.swift; sourceTree = "<group>"; };
 		4CD819FE1C8583E40095322D /* Block.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
+		4CD8F3DA1C86A7DB008ECC67 /* SparkParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SparkParticle.sks; sourceTree = "<group>"; };
+		4CD8F3DB1C86A7DB008ECC67 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +121,8 @@
 			children = (
 				4CC56B801C7F0483001771D4 /* particle.png */,
 				4CC56B821C7F04BE001771D4 /* ExplodeParticle.sks */,
+				4CD8F3DA1C86A7DB008ECC67 /* SparkParticle.sks */,
+				4CD8F3DB1C86A7DB008ECC67 /* spark.png */,
 				4C184E401C75726400ED6116 /* AppDelegate.swift */,
 				4C184E421C75726400ED6116 /* GameScene.sks */,
 				4C184E441C75726400ED6116 /* GameScene.swift */,
@@ -125,6 +133,7 @@
 				4C184E501C75726400ED6116 /* Info.plist */,
 				4CD819FE1C8583E40095322D /* Block.swift */,
 				4C7F05181C7AFEA60029FEA7 /* BoardNode.swift */,
+				4C0D503B1C891A0400A8C4F1 /* TextureStore.swift */,
 				4CB93EDF1C7C8FBE00D18E22 /* ButtonNode.swift */,
 				4CCC94261C7D633300A599AC /* ScoreNode.swift */,
 			);
@@ -254,10 +263,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CD8F3DC1C86A7DB008ECC67 /* SparkParticle.sks in Resources */,
 				4C184E431C75726400ED6116 /* GameScene.sks in Resources */,
 				4C184E4F1C75726400ED6116 /* LaunchScreen.storyboard in Resources */,
 				4C184E4C1C75726400ED6116 /* Assets.xcassets in Resources */,
 				4C184E4A1C75726400ED6116 /* Main.storyboard in Resources */,
+				4CD8F3DD1C86A7DB008ECC67 /* spark.png in Resources */,
 				4CC56B811C7F0483001771D4 /* particle.png in Resources */,
 				4CC56B841C7F04BE001771D4 /* ExplodeParticle.sks in Resources */,
 			);
@@ -289,6 +300,7 @@
 				4C184E471C75726400ED6116 /* GameViewController.swift in Sources */,
 				4C7F05191C7AFEA60029FEA7 /* BoardNode.swift in Sources */,
 				4C184E411C75726400ED6116 /* AppDelegate.swift in Sources */,
+				4C0D503C1C891A0400A8C4F1 /* TextureStore.swift in Sources */,
 				4CB93EE01C7C8FBE00D18E22 /* ButtonNode.swift in Sources */,
 				4CCC94271C7D633300A599AC /* ScoreNode.swift in Sources */,
 			);

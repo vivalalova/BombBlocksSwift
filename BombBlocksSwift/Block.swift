@@ -10,8 +10,12 @@ import SpriteKit
 
 class Block:SKSpriteNode {
     
-    enum BlockType :Int {
-        case Blue = 0 ,Red = 1,Yellow = 2, Green = 3 , Background = 4
+    enum MainType :Int {
+        case Normal = 0 , Bomb = 1, Background = 2, Next = 3
+    }
+    
+    enum SubType :Int {
+        case Blue = 0 ,Red = 1,Yellow = 2, Green = 3 ,Black = 4 , AlphaWhite = 5
     }
     
     enum ExpandType {
@@ -22,101 +26,119 @@ class Block:SKSpriteNode {
         case Down = 0 , Left = 1 , Right = 2, Up = 3
     }
 
-    var type :BlockType!
+    var type :MainType!
+    var subType :SubType!
+    var bombCounter = 0
     var nextBlock :Block?
-    var blockColor:UIColor!
+    var isAvailable = true
+    var counterLabel : SKLabelNode?
+    var toBeCancelled = false
     
-    init(emptyBlockRect: CGRect) {
-
-        super.init(texture: nil, color: UIColor.clearColor(), size: emptyBlockRect.size)
-        setBlockType(BlockType.Background)
-        createBlockTexture(emptyBlockRect.size)
-        position = CGPointMake( emptyBlockRect.origin.x + emptyBlockRect.size.width/2 , emptyBlockRect.origin.y + emptyBlockRect.size.width/2 )
-        zPosition = 1
+    init(blockRect:CGRect , blockType:MainType) {
+        
+        super.init(texture: nil, color: UIColor.clearColor(), size: blockRect.size)
+        setBlockType(blockType)
+        position = CGPointMake( blockRect.origin.x + blockRect.size.width/2 , blockRect.origin.y + blockRect.size.width/2 )
+    }
+    
+    /* Set bomb from next block node */
+    init(blockRect:CGRect , blockType:MainType ,  blockSubType:SubType) {
+        
+        super.init(texture: nil, color: UIColor.clearColor(), size: blockRect.size)
+        self.type = blockType
+        self.subType = blockSubType
+        self.texture = TextureStore.sharedInstance.bombTextures[self.subType.rawValue]
+        self.zPosition = 3
+        isAvailable = false
+        addBombCounter()
+        position = CGPointMake( blockRect.origin.x + blockRect.size.width/2 , blockRect.origin.y + blockRect.size.width/2 )
+    }
+    
+    /* Set normal block from next block node */
+    init(blockRect:CGRect , blockSubType:SubType) {
+        
+        super.init(texture: nil, color: UIColor.clearColor(), size: blockRect.size)
+        self.type = MainType.Normal
+        self.subType = blockSubType
+        self.color = TextureStore.sharedInstance.blockColor[self.subType.rawValue]
+        self.texture = TextureStore.sharedInstance.blockTextures[self.subType.rawValue]
+        self.zPosition = 3
+        position = CGPointMake( blockRect.origin.x + blockRect.size.width/2 , blockRect.origin.y + blockRect.size.width/2 )
     }
     
     init(nextNodeRect: CGRect, viewSize: CGSize) {
         
         super.init(texture: nil, color: UIColor.clearColor(), size: nextNodeRect.size)
-        color = UIColor(white: 0.15, alpha: 1)
-        createBlockTexture(nextNodeRect.size)
+        setBlockType(Block.MainType.Next)
         position =  CGPointMake( viewSize.width , viewSize.height)
-        nextBlock = Block(nextBlockRect: CGRectMake(0,0,nextNodeRect.size.width-25,nextNodeRect.size.height-25))
+        
+        /* Next node content */
+        let nextBlockSize :CGFloat = nextNodeRect.size.width-25
+        nextBlock = Block(blockRect: CGRectMake(-(nextBlockSize)/2,-(nextBlockSize)/2,nextBlockSize,nextBlockSize), blockType: Block.MainType.Normal)
         addChild(nextBlock!)
         nextBlock!.PopBlockAnimation({})
     }
     
-    init(gameBlockRect: CGRect , newBlockType:BlockType) {
+    func addBombCounter() {
         
-        super.init(texture: nil, color: UIColor.clearColor(), size: gameBlockRect.size)
-        setBlockType(newBlockType)
-        createBlockTexture(gameBlockRect.size)
-        position = CGPointMake( gameBlockRect.origin.x + gameBlockRect.size.width/2 , gameBlockRect.origin.y + gameBlockRect.size.width/2 )
-        zPosition = 2
-    }
-    
-    init(nextBlockRect: CGRect) {
+//        let position = CGPointMake(0, self.size.width/2 + 1)
+//        if let particles = SKEmitterNode(fileNamed: "SparkParticle.sks") {
+//            particles.position = position
+//            particles.particleColor = self.color
+//            particles.particleColorBlendFactor = 1.0;
+//            particles.particleColorSequence = nil;
+//            particles.zPosition = 3
+//            self.addChild(particles)
+//        }
         
-        super.init(texture: nil, color: UIColor.clearColor(), size: nextBlockRect.size)
-        setBlockType(nil)
-        createBlockTexture(nextBlockRect.size)
-        position = CGPointMake( nextBlockRect.origin.x  , nextBlockRect.origin.y  )
-        zPosition = 1
-    }
-    
-    func createBlockTexture(size:CGSize) {
+        bombCounter = 10 + Int(arc4random_uniform(UInt32(10)))
         
-        UIGraphicsBeginImageContext(size);
-        self.color.setFill()
-        let path = UIBezierPath(roundedRect: CGRectMake(0, 0, size.width, size.height), cornerRadius: size.width/4)
-        path.fill()
-        let image = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        texture = SKTexture(image: image)
+        counterLabel = SKLabelNode(fontNamed:"AmericanTypewriter-bold")
+        counterLabel?.text = String(bombCounter);
+        counterLabel?.fontSize = 34 * UIScreen.mainScreen().bounds.width / 320
+        counterLabel?.verticalAlignmentMode = SKLabelVerticalAlignmentMode.Center
+        counterLabel?.fontColor = UIColor.blackColor()
+        counterLabel?.position = CGPointMake(0, 0)
+        counterLabel?.zPosition = 5
+        self.addChild(counterLabel!)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setBlockType(blockType:BlockType?) {
+    func setBlockType(blockType:MainType) {
         
-        if let toType = blockType {
-            self.type = toType
-        } else {
-            let randomBlockType = Int(arc4random_uniform(UInt32(3)))
-            self.type = BlockType(rawValue: randomBlockType)
+        self.type = blockType
+
+        switch blockType {
+        case MainType.Normal :
+            let randomBlockType = Int(arc4random_uniform(UInt32(4)))
+            self.subType = SubType(rawValue: randomBlockType)
+            self.texture = TextureStore.sharedInstance.blockTextures[randomBlockType]
+            self.zPosition = 3
+            break
+        case MainType.Bomb :
+            let randomBlockType = Int(arc4random_uniform(UInt32(4)))
+            self.subType = SubType(rawValue: randomBlockType)
+            self.texture = TextureStore.sharedInstance.bombTextures[randomBlockType]
+            self.zPosition = 3
+            isAvailable = false
+            addBombCounter()
+            break
+        case MainType.Background :
+            self.subType = SubType.Black
+            self.texture = TextureStore.sharedInstance.blockTextures[4]
+            self.zPosition = 2
+            isAvailable = false
+            break
+        case MainType.Next :
+            self.subType = SubType.AlphaWhite
+            self.texture = TextureStore.sharedInstance.blockTextures[5]
+            self.zPosition = 1
+            break
         }
-        setColorByBlockType(self.type!)
-    }
-    
-    func setColorByBlockType(type:BlockType) {
-        
-        var newColor : UIColor!
-        
-        switch type {
-        case BlockType.Blue :
-            newColor = UIColor(red: 99/255, green: 173/255, blue: 244/255, alpha: 1)
-            break
-        case BlockType.Red :
-            newColor = UIColor(red: 242/255, green: 110/255, blue: 134/255, alpha: 1)
-            break
-        case BlockType.Green:
-            newColor = UIColor(red: 66/255, green: 168/255, blue: 129/255, alpha: 1)
-            break
-        case BlockType.Yellow :
-            newColor = UIColor(red: 217/255, green: 186/255, blue: 95/255, alpha: 1)
-            break
-        case BlockType.Background :
-            newColor = UIColor.blackColor()
-        }
-        
-        self.color = newColor
-    }
-    
-    func setNextNode() {
-        setBlockType(nil)
-        createBlockTexture(self.size)
+        self.color = TextureStore.sharedInstance.blockColor [self.subType.rawValue]
     }
     
     func PopBlockAnimation(gameOverBlock:()->()) {
@@ -128,7 +150,6 @@ class Block:SKSpriteNode {
         let scaleDownAction = SKAction.scaleTo(1, duration: 0.04)
         self.runAction(SKAction.sequence([scaleUpAction,scaleDownAction]), completion: { () -> Void in
             gameOverBlock()
-
         })
     }
     
@@ -141,64 +162,72 @@ class Block:SKSpriteNode {
         self.runAction(scaleDownAction)
     }
     
-    func expandBlockAnimation(completion:()->(), expandType:ExpandType) {
+    func extendBlockAnimation(completion:()->() , direction:AnimationDirection) {
         
-        var action : SKAction!
-        let interval : NSTimeInterval = 0.2
-        switch expandType {
-        case ExpandType.Vertical :
-            action = SKAction.scaleXBy(0.25, y: 3, duration: interval)
-            break
-        case ExpandType.Horizontal :
-            action = SKAction.scaleXBy(3, y: 0.25, duration: interval)
-            break
-        default :
-            break
-        }
-        self.runAction(action, completion: { () -> Void in
-            completion()
-        })
-    }
-    
-    func squareBlockAnimation(completion:()->() , direction:AnimationDirection) {
-        
-        let size = self.size.width/2
+        let size :CGFloat = 22
         let actionDuration : NSTimeInterval = 0.2
-        let pathWidth : CGFloat = size/1.5
+        let pathWidth : CGFloat = self.size.width/3
         var pathNode : SKShapeNode!
         var action : SKAction!
         
         switch direction {
             
         case AnimationDirection.Down :
-            pathNode = SKShapeNode(rect: CGRectMake(0,0,pathWidth,size))
-            pathNode.position = CGPointMake(pathWidth/2 * -1, -size)
+            pathNode = SKShapeNode(rect: CGRectMake(pathWidth / -2,(self.size.width) / -2,pathWidth,size))
             action = SKAction.moveByX(0, y: -size, duration: actionDuration)
             break
         case AnimationDirection.Up :
-            pathNode = SKShapeNode(rect: CGRectMake(0,0,pathWidth,size))
-            pathNode.position = CGPointMake(pathWidth/2 * -1, 0)
+            pathNode = SKShapeNode(rect: CGRectMake(pathWidth / -2,self.size.width/2 - size,pathWidth,size))
             action = SKAction.moveByX(0, y: size, duration: actionDuration)
             break
         case AnimationDirection.Right :
-            pathNode = SKShapeNode(rect: CGRectMake(0,0,size, pathWidth))
-            pathNode.position = CGPointMake(0,pathWidth/2 * -1)
+            
+            pathNode = SKShapeNode(rect: CGRectMake(self.size.width/2 - size,pathWidth / -2,size , pathWidth))
             action = SKAction.moveByX(size, y: 0, duration: actionDuration)
             break
         case AnimationDirection.Left :
-            pathNode = SKShapeNode(rect: CGRectMake(0,0,-size, pathWidth))
-            pathNode.position = CGPointMake(0,pathWidth/2 * -1)
+            pathNode = SKShapeNode(rect: CGRectMake((self.size.width) / -2,pathWidth / -2,size,pathWidth))
             action = SKAction.moveByX(-size, y: 0, duration: actionDuration)
             break
         }
-        
         pathNode.strokeColor = self.color
         pathNode.fillColor = self.color
         self.addChild(pathNode)
-//        pathNode.zPosition = 3
+        pathNode.zPosition = -1
         pathNode.runAction(action, completion: { () -> Void in
             completion()
         })
+    }
+    
+    func triggerBomb(completion:()->()) {
+        
+        let scaleUpAction = SKAction.scaleBy(1.5, duration: 0.2)
+        let scaleBackAction = SKAction.scaleTo(1, duration: 0.2)
+        let actionSequence = SKAction.sequence([scaleUpAction,scaleBackAction,scaleUpAction])
+        self.runAction(actionSequence) { () -> Void in
+            self.removeAllChildren()
+            self.alpha = 0
+            self.subType = SubType.Black
+            completion()
+        }
+    }
+    
+    func sealBackground() {
+
+        self.runAction(SKAction.scaleTo(0, duration: 0.5))
+    }
+    
+    func decreaseBombCounter() {
+        
+        bombCounter--
+        counterLabel?.text = String(bombCounter)
         
     }
+    
+    func updateBombCounter(counter:Int) {
+        bombCounter = counter
+        counterLabel?.text = String(bombCounter)
+
+    }
+    
 }

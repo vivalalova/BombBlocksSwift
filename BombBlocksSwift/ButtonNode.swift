@@ -21,7 +21,7 @@ class ButtonNode: SKSpriteNode {
         let color = UIColor.whiteColor()
         UIGraphicsBeginImageContext(rect.size);
         color.setFill()
-        let path = UIBezierPath(roundedRect: rect, cornerRadius: rect.size.width/4)
+        let path = UIBezierPath(roundedRect: rect, cornerRadius: rect.size.width/2)
         path.fill()
         let image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
